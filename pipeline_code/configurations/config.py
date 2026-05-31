@@ -29,7 +29,7 @@ class MetricDef:
         self.rename_cols = rename_cols
         self.drop_cols = drop_cols
 
-
+# TODO: check if we can avoid the hardcoded naming and depth
 attributes = [
     MetricDef(
         name="chlorophyll",

@@ -2,6 +2,7 @@
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+# Todo: check if concarency works
 import motuclient
 import pandas as pd
 import xarray as xr
