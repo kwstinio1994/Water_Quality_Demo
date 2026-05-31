@@ -1,41 +1,36 @@
-# Water Quality Assessment Pipeline
+# Water Quality Demo
 
 > **WIP** — Work in Progress
 
-A Python pipeline for assessing coastal marine water quality using satellite and model data from the **Copernicus Marine Service (CMEMS)**.
+This directory contains the original exploratory work and the ongoing pipeline refactor for assessing coastal marine water quality using Copernicus Marine Service data.
 
-## Purpose
+## Contents
 
-Monitor and evaluate coastal water quality in the **Pagasetic Gulf / Thermaic Gulf** region of Greece by computing **Water Quality Indices (WQI)** tailored to different use cases — general environmental quality, swimming suitability, and fishing/aquaculture suitability.
+- **`1.Metrics/`** — Raw data download scripts + initial & further analysis for each of the 5 water quality metrics (chlorophyll, turbidity, pH, temperature, dissolved oxygen)
+- **`2.Combine Metrics/`** — Spatial joining of the 5 metrics via nearest-neighbor matching (KDTree / BallTree)
+- **`3.Water Quality Index/`** — Rating Indicator computation, weighted WQI calculation, correlation analysis, seasonal breakdowns, per-spot insights, ARIMA forecasting
+- **`4.Swimming Index/`** — Re-weighted WQI for swimming suitability
+- **`5.Fishing Index/`** — Re-weighted WQI for fishing/aquaculture suitability
+- **`6.Presentations/`** — Progress presentations
+- **`7.References/`** — Academic papers, water quality standards, reference data
+- **`pipeline_code/`** — Modular pipeline being refactored from the original scripts
+  - `configurations/config.py` — Config, Project, MetricDef definitions
+  - `data_download/download.py` — Concurrent download module
 
-## Workflow
+## Pipeline usage
 
-1. **Data acquisition** — Download 5 water quality metrics from CMEMS (chlorophyll, turbidity, pH, temperature, dissolved oxygen) via `motuclient`
-2. **Spatial joining** — Combine metrics by nearest-neighbor matching on coordinates
-3. **WQI computation** — Normalize each metric into a Rating Indicator (0–1), compute weighted WQI (0–10 scale), and classify results (Excellent / Good / Medium / Bad / Very Bad)
-4. **Forecasting** — ARIMA time-series forecasting of WQI values
-5. **Analysis** — Seasonal breakdowns, per-spot insights, correlation analysis
+```python
+from pipeline_code.configurations.config import Config, Project
+from pipeline_code.data_download.download import download_all
 
-## Status
+cfg = Config()
+project = Project(
+    name="my_site",
+    lon_min=25.0, lon_max=25.5,
+    lat_min=39.7, lat_max=40.1,
+    date_start="2020-01-01",
+    date_end="2022-09-30"
+)
 
-Currently refactoring the original exploratory scripts into a modular pipeline:
-
+results = download_all(cfg, project)
 ```
-pipeline_code/
-  configurations/   — Config, Project definition, metric metadata
-  data_download/    — Concurrent downloading of all metrics
-  generic_cleanup/  — (planned)
-  ...
-```
-
-## Project structure
-
-The original work is in `water_quality_demo/` with numbered directories (`1.Metrics/` through `7.References/`). The pipeline code is being organized under `pipeline_code/`.
-
-## Requirements
-
-- Python 3.10+
-- `motuclient` (Copernicus Marine Service client)
-- `xarray`, `netCDF4`, `pandas`, `numpy`
-- `scikit-learn`, `statsmodels`, `pmdarima`
-- Copernicus Marine credentials (set in `.env`)
